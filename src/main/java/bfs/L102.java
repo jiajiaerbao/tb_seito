@@ -9,10 +9,9 @@ import java.util.Queue;
  * Created by Ryu 11/23/12
  *
  */
+public class L102 {
 
-public class L102BinaryTreeLevelOrderTraversal {
-
-    public class TreeNode {
+    class TreeNode {
         int val;
         TreeNode left;
         TreeNode right;
