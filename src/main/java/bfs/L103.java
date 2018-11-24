@@ -12,8 +12,8 @@ import java.util.Queue;
 public class L103 {
     class TreeNode {
         int val;
-        L102.TreeNode left;
-        L102.TreeNode right;
+        TreeNode left;
+        TreeNode right;
 
         TreeNode(int x) {
             val = x;
