@@ -15,8 +15,8 @@ public class L1266 {
     /*
      * 加入到 Queue里面 和 设置 visited 最好放在一起, 这样不容易出错
      * */
-    public List<String> findAnyoneLadder(String beginWord, String endWord, List<String> wordList) {
-        List<String> res = new ArrayList<>();
+    public List<List<String>> findAnyoneLadder(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
         //corner case
         if (beginWord == null || beginWord.length() == 0 ||
                 endWord == null || endWord.length() == 0 ||
@@ -45,10 +45,11 @@ public class L1266 {
                 for (String nextWord : nextWords) {
                     //这里在进入下一层之前, 直接在Queue里面进行判断, 更快
                     if (nextWord.equals(endWord)) {
-                        //return minLen + 1;
+                        //把最后的endWord加到graph里面
+                        graph.put(nextWord, cur);
                         List<String> result = printGraph(graph, endWord);
-                        Collections.reverse(result);
-                        return result;
+                        res.add(result);
+                        return res;
                     }
                     //当加入到Queue的时候, 已经touch到了, 这时设置visited
                     que.offer(nextWord);            //加入Queue
@@ -85,12 +86,15 @@ public class L1266 {
      * 这里是变化点: 因为从 endWord 只有一条边能连通 startWord
      * */
     private List<String> printGraph(final Map<String, String> graph, final String endWord){
+        System.out.println(endWord+"==="+graph);
         List<String> res = new ArrayList<>();
         String cur = endWord;
         while (graph.containsKey(cur)){
             cur = graph.get(cur);
-            res.add(cur);
+            //这里要在最开始的地方加, 相当于倒序
+            res.add(0, cur);
         }
+        //这个是在最后加
         res.add(endWord);
         return res;
     }
