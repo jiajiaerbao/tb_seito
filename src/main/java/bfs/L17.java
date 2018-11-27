@@ -12,6 +12,13 @@ public class L17 {
     *   pathLength: digits.length
     *   size: res.size()
     *   converts(cur): get(digits.charAt(i))
+    *
+    *   关键是你不理解为什么要这样写!!!!
+    *       从结果集的角度考虑: 你先建立一个空的结果集, 用来保存结果
+    *       这里的定长是说对于结果而言, 每一个独立的结果都是定长的, 长度是 digits.length
+    *       在基于digits.length的for loop里面:
+    *           对于当前的位置, 也就是基于digits.length的for loop里面的i, 把所有的可能性全部加到结果集res当中
+    *           然后跳到digits.length的下一位, 继续相同的步骤
     * */
     public List<String> letterCombinations(String digits) {
         List<String> res = new LinkedList<>();
