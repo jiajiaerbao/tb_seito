@@ -2,9 +2,12 @@ package bfs;
 
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 public class L127 {
     /*
-     * 加入到 Queue里面 和 设置 visited 最好放在一起, 这样不容易出错
+     * 坑 1: 加入到 Queue里面 和 设置 visited 最好放在一起, 这样不容易出错
+     * 坑 2: 对于char[] chars, 转化成String需要这样写: String newWord = String.valueOf(chars);
+     * 坑 3: len 的初始值用一个简单的例子试一下, 一定要小心 len++ 是对应于while(!que.isEmpty())的loop
      * */
     public int ladderLength(String beginWord, String endWord, List<String> wordList) {
         //corner case
@@ -60,4 +63,105 @@ public class L127 {
         }
         return res;
     }
+
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        //corner case
+        if (beginWord == null || endWord == null || beginWord.length() == 0 || endWord.length() == 0 || wordList == null || wordList.size() == 0) {
+            return -1;
+        }
+        Set<String> dict = new HashSet<>();
+        for (String word : wordList) {
+            dict.add(word);
+        }
+        return findShortestPath(beginWord, endWord, dict);
+    }
+
+    private int findShortestPath(String beginWord, String endWord, Set<String> dict) {
+        int len = 1;
+        Queue<String> que = new LinkedList<>();
+        que.offer(beginWord);
+        while (!que.isEmpty()) {
+            int size = que.size();
+            while (size-- > 0) {
+                String cur = que.poll();
+                List<String> nexts = getNextWords(cur, dict);
+                //System.out.println("test" + nexts);
+                for (String next : nexts) {
+                    if (endWord.equals(next)) {
+                        return len + 1;
+                    }
+                    //if(dict.contains(next)){
+                    que.offer(next);
+                    dict.remove(next);
+                    //}
+                }
+            }
+            len++;
+        }
+        return 0;
+    }
+
+    private List<String> getNextWords(String cur, Set<String> dict) {
+        List<String> res = new ArrayList<>();
+        char[] chars = cur.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char temp = chars[i];
+            for (char newCh = 'a'; newCh <= 'z'; newCh++) {
+                chars[i] = newCh;
+                String newWord = String.valueOf(chars);
+                //System.out.println("newWord: " + newWord);
+                if (dict.contains(newWord)) {
+                    res.add(newWord);
+                }
+            }
+            chars[i] = temp;
+        }
+        return res;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
