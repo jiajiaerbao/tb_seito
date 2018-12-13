@@ -60,4 +60,70 @@ public class L339 {
         }
         return sum;
     }
+
+
+
+
+
+    /*****************************************************************/
+    public int depthSum2(List<NestedInteger> nestedList) {
+        if (nestedList == null || nestedList.size() == 0) {
+            return 0;
+        }
+        int sum = 0;
+        int len = 1;
+        Queue<NestedInteger> que = new LinkedList<>();
+        for (NestedInteger cur : nestedList) {
+            que.offer(cur);
+        }
+        while (!que.isEmpty()) {
+            int size = que.size();
+            while (size-- > 0) {
+                NestedInteger cur = que.poll();
+                if (cur.isInteger()) {
+                    sum += cur.getInteger() * len;
+                } else {
+                    for (NestedInteger next : cur.getList()) {
+                        que.offer(next);
+                    }
+                }
+            }
+            len++;
+        }
+        return sum;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
