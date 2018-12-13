@@ -2,11 +2,25 @@ package bfs;
 
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 public class L126 {
-    //如何表示图: 用HashMap<V, List<V>>来表示!!!!
-    //见BFS笔记:
-    //  如果在第一次遇见 c 的时候, 把 c 删掉的话, 会出现丢解的问题, 比如删除了 c 之后, 导致 b 跟 c 的边无法加到解集合中
-    //  一层一层地删除访问过的元素
+    //坑 1: 如何表示图: 用HashMap<V, List<V>>来表示!!!!
+    //坑 2: 见BFS笔记:
+    //          如果在第一次遇见 c 的时候, 把 c 删掉的话, 会出现丢解的问题, 比如删除了 c 之后, 导致 b 跟 c 的边无法加到解集合中
+    //          一层一层地删除访问过的元素
+    //坑 3: 坑BOSS: 思路根本不记得了 --> 因为不理解: bfs, 一层一层地扫描, 反着存到graph(next, cur), 当发现了endWord之后一定要在处理完该层之后再生成所有path, 用dfs从endWord开始反着生成path
+    //坑 4: 用DFS构建路径的不理解:
+    //          a. graph是<next, List<cur>>, graph的边是反着指的
+    //          b. 在调用函数 search(List<List<String>> res, List<String> one, String cur, String end, Map<String, List<String>> graph)的时候
+    //             是search(res, one, endWord, beginWord, graph): cur的位置放endWord, end的位置放beginWord, 因为边是反着指的, 所有边的起始点是endWord, 所有边的终点是beginWord
+    //          c.
+    //          d. 在getPaths的for loop里面, 把next也就是应该是cur的点, 放在开始位置: path.add(0, next)
+    //坑 5: bfs while loop里面卡了三个小时:
+    //          a. 第二遍写法的查环是通过从字典里面删除word来实现的
+    //          b. 构建graph的时候
+    //          c. 设置一个flag: 如果在当前层发现了endWord, 不立即返回, 一定要把当前层的所有节点都处理完之后, 再生成所有的path, 防止丢解
+    //          d. 第一次(成功)加到thisLevelVisited的时候, 才加入到queue里面
+    //          e. 千万不要忘记更新graph
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
         List<List<String>> res = new ArrayList<>();
 
@@ -103,4 +117,128 @@ public class L126 {
             one.remove(0);
         }
     }
+
+
+    /************************************************************/
+
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        //corner case
+        if (beginWord == null || beginWord.length() == 0 ||
+                endWord == null || endWord.length() == 0 ||
+                wordList == null || wordList.size() == 0) {
+            return new ArrayList<>();
+        }
+        Set<String> dic = new HashSet<>(wordList);
+        return getAllPaths(beginWord, endWord, dic);
+    }
+
+    private List<List<String>> getAllPaths(String beginWord, String endWord, Set<String> dict) {
+        List<List<String>> res = new ArrayList<>();
+        Queue<String> que = new LinkedList<>();
+        que.offer(beginWord);
+        boolean flag = false;
+        Map<String, List<String>> graph = new HashMap<>();
+        while (!que.isEmpty()) {
+            //每当进入到下一层的时候, 重新建立一个HashSet用来保存当前层所有已经访问过的节点
+            Set<String> thisLevelVisited = new HashSet<>();
+            int size = que.size();
+            while (size-- > 0) {
+                String cur = que.poll();
+                List<String> nexts = getNexts(cur, dict);
+                //System.out.println("nexts:" + nexts);
+                for (String next : nexts) {
+                    if (next.equals(endWord)) {
+                        flag = true;
+                    }
+                    //第一次碰到的点: 放入到queue里面, 在图里面新建一个<Node, List<Neighbors>>, 放入该层的visitedSet里面
+                    if (!thisLevelVisited.contains(next)) {
+                        que.offer(next);
+                        graph.put(next, new ArrayList<>());
+                        thisLevelVisited.add(next);
+                    }
+                    //****这里是不是需要加到 if 里面? 不要
+                    //      因为这里的key是next, 需要加的节点是cur: graph.get(next).add(cur)
+                    //      也就是说即使next已经touch过了, 也要新建立一条从next到不同cur的边(同一个queue里面有不同的cur)
+                    List<String> neighbors = graph.get(next);
+                    neighbors.add(cur);
+                    graph.put(next, neighbors);
+                }
+                //System.out.println("cur:" + cur + ";   graph:" + graph.get(cur));
+            }
+            if (flag) {
+                //****为什么要在list里面加endWord?
+                //      因为endWord在graph里面是所有边的起点, 如果在刚开始的时候,不加到list里面的话, 遍历到后面之后就没办法加了
+                //      dfs是deep copy最后的list, 所以初始的endWord一直都会在list里面的
+                List<String> list = new ArrayList<>();
+                list.add(endWord);
+                getPaths(endWord, beginWord, list, res, graph);
+                return res;
+            }
+            //从dict里面去掉所有已经touch过的单词, 起到查环的作用
+            dict.removeAll(thisLevelVisited);
+        }
+        return res;
+    }
+
+    private List<String> getNexts(String cur, Set<String> dict) {
+        List<String> res = new ArrayList<>();
+        char[] chars = cur.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char temp = chars[i];
+            for (char ch = 'a'; ch <= 'z'; ch++) {
+                chars[i] = ch;
+                String newWord = String.valueOf(chars);
+                if (!newWord.equals(cur) && dict.contains(newWord)) {
+                    res.add(newWord);
+                }
+            }
+            chars[i] = temp;
+        }
+        return res;
+    }
+
+    private void getPaths(String cur, String end, List<String> path, List<List<String>> res, Map<String, List<String>> graph) {
+        if (cur.equals(end)) {
+            res.add(new ArrayList<>(path));
+            return;
+        }
+        for (String next : graph.get(cur)) {
+            path.add(0, next);
+            getPaths(next, end, path, res, graph);
+            path.remove(0);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
