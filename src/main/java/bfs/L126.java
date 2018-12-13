@@ -121,7 +121,7 @@ public class L126 {
 
     /************************************************************/
 
-    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+    public List<List<String>> findLadders2(String beginWord, String endWord, List<String> wordList) {
         //corner case
         if (beginWord == null || beginWord.length() == 0 ||
                 endWord == null || endWord.length() == 0 ||
