@@ -6,8 +6,9 @@ import java.util.Queue;
 
 
 /*
-* 这道题关键是话题, 把每一层进入到下一层的时候, sum 的计算过程是如何变化的弄清楚了, 就明白了
-* 具体见bfs文档
+* 坑 1: 这道题关键是画图, 把每一层进入到下一层的时候, sum 的计算过程是如何变化的弄清楚了, 就明白了
+*       具体见bfs文档
+* 坑 2: 每当进入到下一层的时候, 把之前所有遇到过的Integer都加一遍即可
 * */
 public class L364 {
     // This is the interface that allows for creating nested lists.
@@ -61,4 +62,74 @@ public class L364 {
         }
         return sum;
     }
+
+    /****************************************************************/
+    /*
+    * 2 + (2+4)
+    * 1 + (1+4) + (1+4+6)
+    * */
+    public int depthSumInverse2(List<NestedInteger> nestedList) {
+        if (nestedList == null || nestedList.size() == 0) {
+            return 0;
+        }
+        Queue<NestedInteger> que = new LinkedList<>();
+        for (NestedInteger cur : nestedList) {
+            que.offer(cur);
+        }
+        int sum = 0;
+        int eachIntegerSum = 0;
+        while (!que.isEmpty()) {
+            int size = que.size();
+            while (size-- > 0) {
+                NestedInteger cur = que.poll();
+                if (cur.isInteger()) {
+                    eachIntegerSum += cur.getInteger();
+                } else {
+                    for (NestedInteger next : cur.getList()) {
+                        que.offer(next);
+                    }
+                }
+            }
+            sum += eachIntegerSum;
+        }
+        return sum;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
