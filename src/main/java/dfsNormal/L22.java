@@ -3,11 +3,18 @@ package dfsNormal;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 public class L22 {
     /*
-    * 通过这道题要掌握括号匹配问题的特点:
-    * 1.定义一个 delta, 在中间的任意时刻, 左括号的数量一定大于等于右括号的数量
-    * 2.结束的时候, delta一定是等于零
+    * 坑 1: 通过这道题要掌握括号匹配问题的特点:
+    *           a. 定义一个 delta, 在中间的任意时刻, 左括号的数量一定大于等于右括号的数量
+    *           b.结束的时候, delta一定是等于零
+    * 坑 2: 理解分叉:
+    *           a. 加左括号
+    *           b. 加右括号
+    * 坑 3: base case:
+    *           a. 成功情况: 左括号和右括号的数量都是n, 刚好满足条件
+    *           b. 失败情况: 左括号数量小于右括号数量(delta < 0), 或者 左括号数量大于n
     * */
 
     private String LEFT_PARENTHES = "(";
@@ -43,4 +50,75 @@ public class L22 {
             path.setLength(size);
         }
     }
+
+    /***********************************第二遍*****************************************************/
+
+    public List<String> generateParenthesis2(int n) {
+        List<String> res = new ArrayList<>();
+        dfs(n, 0, 0, res, new StringBuilder());
+        return res;
+    }
+
+    private void dfs(int n, int left, int right, List<String> res, StringBuilder path) {
+        if (left == n && right == n) {
+            res.add(path.toString());
+            return;
+        }
+        if (left < right || left > n) {
+            return;
+        }
+        int size = path.length();
+        path.append("(");
+        dfs(n, left + 1, right, res, path);
+        path.setLength(size);
+        path.append(")");
+        dfs(n, left, right + 1, res, path);
+        path.setLength(size);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
