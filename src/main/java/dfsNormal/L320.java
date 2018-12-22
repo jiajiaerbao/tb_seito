@@ -3,6 +3,7 @@ package dfsNormal;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("Duplicates")
 public class L320 {
     /*
     * 坑 1: base case success: 在idx最后走到string的末尾的时候, 记得把剩下的lastVal加到path里面, 然后再保存进res里面
@@ -47,4 +48,83 @@ public class L320 {
             helper(s, res, idx + 1, path, 1);
         }
     }
+
+
+    /*********************************************第二遍**************************************************/
+    public List<String> generateAbbreviations2(String word) {
+        List<String> res = new ArrayList<>();
+        if (word == null || word.length() == 0) {
+            res.add("");
+            return res;
+        }
+        helper(word, 0, new StringBuilder(), 0, res);
+        return res;
+    }
+
+    private void helper(String s, int idx, StringBuilder path, int lastVal, List<String> res) {
+        if (idx == s.length()) {
+            int size = path.length();
+            if (lastVal != 0) {
+                path.append(lastVal);
+            }
+            res.add(path.toString());
+            path.setLength(size);
+            return;
+        }
+        char ch = s.charAt(idx);
+        int size = path.length();
+        //convert
+        helper(s, idx + 1, path, lastVal + 1, res);
+        //keep
+        if (lastVal > 0) {
+            path.append(lastVal);
+        }
+        path.append(ch);
+        helper(s, idx + 1, path, 0, res);
+        path.setLength(size);
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
