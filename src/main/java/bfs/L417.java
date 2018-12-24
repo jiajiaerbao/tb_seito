@@ -2,6 +2,7 @@ package bfs;
 
 import java.util.*;
 
+@SuppressWarnings("Duplicates")
 public class L417 {
     public List<int[]> pacificAtlantic(int[][] matrix) {
         List<int[]> res = new ArrayList<>();
@@ -66,12 +67,6 @@ public class L417 {
         }
     }
 
-
-
-
-
-
-
         /****************************************第二遍*******************************************/
         /*
         * 坑 1: 这里不用按层搜索, 所以不用写while(size-- > 0)
@@ -80,7 +75,7 @@ public class L417 {
         * */
 
 
-        public List<int[]> pacificAtlantic(int[][] matrix) {
+        public List<int[]> pacificAtlantic2(int[][] matrix) {
             List<int[]> res = new ArrayList<>();
             //corner case
             if(matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0){
