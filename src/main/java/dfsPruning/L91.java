@@ -10,7 +10,7 @@ public class L91 {
 
 
     /*
-    * 坑 1: 这道题应该用 DP 来解, 而你勉强用DFS来解, 超时了, 但是又不会写Pruning
+    * 坑 1: 这道题应该用 dp 来解, 而你勉强用DFS来解, 超时了, 但是又不会写Pruning
     * 坑 2: DFS超时了, Pruning写不出来, 估计Pruning应该是 前面N位数字 所对应的状态的个数
     * */
 

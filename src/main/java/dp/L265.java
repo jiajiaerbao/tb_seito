@@ -1,4 +1,4 @@
-package DP;
+package dp;
 
 /*
 * 坑 1: 明确dp[i][j]的含义: dp[i][j]: 涂到了第 i 个房子, 用 j 颜色的话, 最小cost

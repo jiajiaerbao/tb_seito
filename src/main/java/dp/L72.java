@@ -1,4 +1,4 @@
-package DP;
+package dp;
 
 /*
 * 坑 1: 如果 i, j 位置上的 字符 不相等的话, 从delete/insert/replace里面取出最小cost的那个, 最后别忘了加1
