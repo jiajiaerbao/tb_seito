@@ -1,7 +1,6 @@
 package dp;
 
-
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+import java.util.Arrays;
 
 /**
  * 坑 1: key 的 index 的移动方向是固定的(只是增大), 而 ring 的 index 可以向左/向右移动, 所以要先从 key 的 index 开始遍历
@@ -14,6 +13,12 @@ import org.omg.Messaging.SYNC_WITH_TRANSPORT;
  *       通过单独定义的 getIndex 来获取
  * 坑 5: 每次顺时针或者逆时针旋转的时候, count 都需要 加 1 (转动的count, 不是 按一下的count)
  * 坑 6: 变量命名要注意, ringIdx和keyIdx 要比 idxR和idxK 好, 不容易出错
+ * 坑 7: 写 DP 的时候:
+ *          一定要清楚 dp[i][j] 代表什么
+ *          跟前一个状态 -1 OR +1 的联系是什么
+ *          左闭右闭 还是 左闭右开
+ *          边界条件如何赋值
+ * 坑 8: 向左转 和 向右转 的写法, DP里面的写法比较好
  */
 @SuppressWarnings("Duplicates")
 public class L514 {
@@ -84,22 +89,39 @@ public class L514 {
         System.out.println(res);
     }
 
+    /*******************************DP 解法*********************************************/
 
-    /*public int findRotateSteps(String ring, String key) {
-        *//*
-        * dp[i, j] <-- min( dp[ 0-len-1, j-1] ) + 1
-        *
-        *
-        * *//*
+    public int findRotateSteps2(String ring, String key) {
+        int keyLen = key.length();
+        int ringLen = ring.length();
 
-        int len1 = ring.length();
-        int len2 = key.length();
-        int[][] dp = new int[len1][len2];
-        dp[0][0] = 0;
-        for(int i = 0; i <= len1; i++){
-            for(int j = 0; j <= len2; j++){
-                dp[i][j] = Math.min(dp[i-1][j-1], dp[i][j]) + 1;
+        int[][] dp = new int[keyLen][ringLen];
+
+        for (int i = 0; i < keyLen; i++) {
+            for (int j = 0; j < ringLen; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                if (key.charAt(i) == ring.charAt(j)) {
+                    if (i == 0) {
+                        dp[i][j] = getCost(j, 0, ringLen) + 1;
+                    } else {
+                        for (int k = 0; k < ringLen; k++) {
+                            if (dp[i - 1][k] != Integer.MAX_VALUE) {
+                                dp[i][j] = Math.min(dp[i][j], dp[i - 1][k] + getCost(j, k, ringLen) + 1);
+                            }
+                        }
+                    }
+                }
             }
         }
-    }*/
+
+        int res = Integer.MAX_VALUE;
+        for (int j = 0; j < ringLen; j++) {
+            res = Math.min(res, dp[keyLen - 1][j]);
+        }
+        return res;
+    }
+
+    private int getCost(int i, int j, int len) {
+        return Math.min((j - i + len) % len, (i - j + len) % len);
+    }
 }
