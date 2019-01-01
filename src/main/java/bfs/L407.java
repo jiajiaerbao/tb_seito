@@ -12,6 +12,8 @@ public class L407 {
     *   在加入到queue的时候, next的Cell的高度是取 当前Cell和Next Cell高度中的较大的值:
     *       如果 当前Cell高度 大于 Next Cell高度, 则按照 当前Cell高度产生积水
     *       如果 当前Cell高度 小于 Next Cell高度, 则不产生积水, next Cell高度按照自身的高度来计算
+    * 坑 4: 时间复杂度是 O(m*n*lg(m+n)), 总共有 m*n 个节点, 因为这里的BFS的Queue用的是 PriorityQueue,
+    *       放进 Queue 里面的元素最大个数是 (m+n), 每次放进去一个元素都需要 重新排序, 最多需要log(m+n)
     * */
 
     class Cell implements Comparable<Cell> {
