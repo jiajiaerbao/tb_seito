@@ -3,7 +3,7 @@ package tree;
 /*
 * 坑 1: 298 的 follow up: 如果不是单一方向的递增 递减的话, 找出最长的
 * 坑 2: 这道题的考点就是 对于 左右子树, 要分别 返回 当前左右子树 的最长的 {递增len, 递减len}
-*
+* 坑 3: 同时记录, 以当前节点作为拐点的 最大递增len 最大递减len
 * */
 @SuppressWarnings("Duplicates")
 public class L298_FL {
