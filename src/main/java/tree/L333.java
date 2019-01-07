@@ -9,12 +9,13 @@ package tree;
 *       a.是 root == null 的节点的话, 自动 + 1, 也就是通过 size == 0 来判断
 *       b.如果 root 不是 null 的话, 根据左右子树返回的 min 和 max 来判断
 * 坑 3: 生成新的 Wrapper class 的时候, 注意 max 和 min 的先后顺序
+* 坑 4: dfs 和 dfs_2是通过 满足条件 和 不满足条件 来进行判断的
 * */
 @SuppressWarnings("Duplicates")
 public class L333 {
     public int largestBSTSubtree(TreeNode root) {
         int[] res = new int[1];
-        dfs(root, res);
+        dfs_2(root, res);
         return res[0];
     }
 
@@ -38,6 +39,28 @@ public class L333 {
                     left.size + right.size + 1);
         }
         return null;
+    }
+
+    private Wrapper dfs_2(TreeNode root, int[] cnt) {
+        if (root == null) {
+            return new Wrapper(0, 0, 0);
+        }
+        Wrapper left = dfs(root.left, cnt);
+        Wrapper right = dfs(root.right, cnt);
+        //左子树 或者 右子树 不是BST
+        if (left == null || right == null) {
+            return null;
+        }
+        //left.size == 0 和 right.size == 0 说明 左子树 或者 右子树 是 null
+        if ((left.size > 0 && left.max > root.val) ||
+                (right.size > 0 && root.val > right.min)) {
+            return null;
+        }
+        cnt[0] = Math.max(cnt[0], left.size + right.size + 1);
+        return new Wrapper(
+                right.size == 0 ? root.val : right.max,
+                left.size == 0 ? root.val : left.min,
+                left.size + right.size + 1);
     }
 
     private class Wrapper {
