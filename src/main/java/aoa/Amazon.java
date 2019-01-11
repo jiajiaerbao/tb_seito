@@ -1,8 +1,6 @@
 package aoa;
 
 import tree.TreeNode;
-
-import java.lang.reflect.Array;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -17,9 +15,9 @@ public class Amazon {
      * Space complexity: O(k), where k is numSteakhouses used by maxHeap
      * */
     /*
-    * Created by Patel on 01/11/2019
-    * @Return nearest numSteakhouses locations
-    * */
+     * Created by Patel on 01/11/2019
+     * @Return nearest numSteakhouses locations
+     * */
     List<List<Integer>> nearestXsteakHouses(
             int totalSteakhouses,
             List<List<Integer>> allLocations,
@@ -59,15 +57,15 @@ public class Amazon {
     /****************************************************************************************************************************************************************************************************************************/
 
     /*
-    * Explain:
-    * The logical of my solution is using treeMap to store the list with less elements in foregroundAppList and backgroundAppList, assuming the two lists have different counts of Apps.
-    * Traverse the list with less elements and populate it into treeMap, key is memory usage of each APP, value is ID of each APP: <AppMemory, AppID>. The time complexity of this process is O(m log m), space complexity is O(m)
-    * Traverse the list with more elements, for current memory usage of each APP in the list with more elements, calculating the remain memory which is the difference between deviceCapacity and current memory usage.
-    * Utilizing the floorKey function in treeMap to get the maximum available App memory in the treeMap which is less than or equal to remain memory.
-    * If maximum available App memory exists in the treeMap, then compare with current maximumUsage, if large than current maximumUsage, then update maximumUsage using the current combination and also update result set.
-    * The total time complexity is Max(O(m log n), O(n log n)), which n is size with less elements in the two lists, and m is the size with more elements in the two lists
-    * The total space complexity is O(n), which n is size with less elements in the two lists
-    * */
+     * Explain:
+     * The logical of my solution is using treeMap to store the list with less elements in foregroundAppList and backgroundAppList, assuming the two lists have different counts of Apps.
+     * Traverse the list with less elements and populate it into treeMap, key is memory usage of each APP, value is ID of each APP: <AppMemory, AppID>. The time complexity of this process is O(m log m), space complexity is O(m)
+     * Traverse the list with more elements, for current memory usage of each APP in the list with more elements, calculating the remain memory which is the difference between deviceCapacity and current memory usage.
+     * Utilizing the floorKey function in treeMap to get the maximum available App memory in the treeMap which is less than or equal to remain memory.
+     * If maximum available App memory exists in the treeMap, then compare with current maximumUsage, if large than current maximumUsage, then update maximumUsage using the current combination and also update result set.
+     * The total time complexity is Max(O(m log n), O(n log n)), which n is size with less elements in the two lists, and m is the size with more elements in the two lists
+     * The total space complexity is O(n), which n is size with less elements in the two lists
+     * */
     /*
      * Created by Patel on 01/11/2019
      * @Return maximum usage combination
@@ -209,11 +207,11 @@ public class Amazon {
         if (path1.size() == 0 || path2.size() == 0) {
             return -1;
         }
-        int commonPath = Math.min(path1.size(), path2.size()) ;//- 1;
+        int commonPath = Math.min(path1.size(), path2.size());//- 1;
 
         for (int i = 0; i < Math.min(path1.size(), path2.size()); i++) {
             if (path1.get(i) != path2.get(i)) {
-                commonPath = i ;//- 1;
+                commonPath = i;//- 1;
                 break;
             }
         }
@@ -377,15 +375,15 @@ public class Amazon {
         }
         ArrayList<Integer> res = new ArrayList<>();
         Deque<Integer> deque = new ArrayDeque<>();
-        for(int i = 0; i < temp.size(); i++){
-            while (!deque.isEmpty() && deque.peekFirst() < i - windowSize + 1){
+        for (int i = 0; i < temp.size(); i++) {
+            while (!deque.isEmpty() && deque.peekFirst() < i - windowSize + 1) {
                 deque.pollFirst();
             }
-            while (!deque.isEmpty() && temp.get(deque.peekLast()) > temp.get(i)){
+            while (!deque.isEmpty() && temp.get(deque.peekLast()) > temp.get(i)) {
                 deque.pollLast();
             }
             deque.offerLast(i);
-            if(i >= windowSize - 1){
+            if (i >= windowSize - 1) {
                 res.add(temp.get(deque.peekFirst()));
             }
         }
@@ -435,6 +433,7 @@ public class Amazon {
         }
         return res;
     }
+
     /****************************************************************************************************************************************************************************************************************************/
     /*
      * Explain:
@@ -449,8 +448,8 @@ public class Amazon {
      * Created by Patel on 01/11/2019
      * @Return maximum usage combination
      * */
-    public List<String> findMostFrequentWord(String text, List<String> toExclude){
-        if(toExclude == null || toExclude.size() == 0 || text == null || text.length() == 0){
+    public List<String> findMostFrequentWord(String text, List<String> toExclude) {
+        if (toExclude == null || toExclude.size() == 0 || text == null || text.length() == 0) {
             return new ArrayList<>();
         }
         List<String> res = new ArrayList<>();
@@ -458,8 +457,8 @@ public class Amazon {
         Map<String, Integer> map = new HashMap<>();
         String[] allWords = text.split("[^a-zA-Z]");
         int curMax = -1;
-        for(String word: allWords){
-            if(setExcludeWords.contains(word)){
+        for (String word : allWords) {
+            if (setExcludeWords.contains(word)) {
                 continue;
             }
             int cur = map.getOrDefault(word.toLowerCase(), 0);
@@ -467,13 +466,14 @@ public class Amazon {
             map.put(word.toLowerCase(), cur);
             curMax = Math.max(curMax, map.get(word.toLowerCase()));
         }
-        for(String word: map.keySet()){
-            if(map.get(word.toLowerCase()) == curMax){
+        for (String word : map.keySet()) {
+            if (map.get(word.toLowerCase()) == curMax) {
                 res.add(word);
             }
         }
         return res;
     }
+
     /****************************************************************************************************************************************************************************************************************************/
     /*
      * Explain:
@@ -637,9 +637,10 @@ public class Amazon {
         }
         return (startMinLen == -1) ? Arrays.asList(-1) : Arrays.asList(startMinLen, endMinLen);
     }
+
     /****************************************************************************************************************************************************************************************************************************/
 
-        public static void main(String[] args) {
+    public static void main(String[] args) {
         Amazon amazon = new Amazon();
 
         /*int totalSteakhouses = 3;
@@ -676,7 +677,7 @@ public class Amazon {
         int node2 = 4;
         System.out.println(amazon.bstDistance(values, n, node1, node2));*//*
 
-        *//*String inputStr = "abcd";
+         *//*String inputStr = "abcd";
         int num = 3;*//*
         String inputStr = "awaglknagawunagwkwag";
         int num = 4;
@@ -715,6 +716,5 @@ public class Amazon {
         /*List<String> targetList = Arrays.asList("made","in","Spain");
         List<String> availableTargetList = Arrays.asList("made","weather","forecast","says","that","made","rain","in","spain","stays");
         System.out.println(amazon.subSequenceTags(targetList, availableTargetList));*/
-
     }
 }
