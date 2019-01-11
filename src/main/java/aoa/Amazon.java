@@ -2,6 +2,7 @@ package aoa;
 
 import tree.TreeNode;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @SuppressWarnings("Duplicates")
@@ -353,8 +354,232 @@ public class Amazon {
     }
 
     /****************************************************************************************************************************************************************************************************************************/
+    /*
+     * Explain:
+     * I am using sliding window and deque to solve this problem.
+     * Using deque to save index of temp arrayList, since using arrayDeque, so the original order of the index will be kept in the deque.
+     * Using for loop to traverse each element in the temp arrayList, and within the for loop, there are two while loops:
+     * The first while is to check whether the least index (also with the lease value in current sliding window) in the deque is out of range or not,
+     * which means if the least index is out of sliding window size, then delete it from the deque.
+     * The second while loop is to check whether the new coming value is less than the current last value in the sliding window, if so then delete if from deque.
+     * After executing the second while, put it to the last position in the deque, and the first element in the deque is guaranteed the least value's index in the sliding window.
+     * Put the index of current least value into result list.
+     * The time complexity is amortized O(1), as for each element in the temp arrayList, can only enter into deque and go out of deque once.
+     * The space complexity is O(k), k is windowSiz
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    public static ArrayList<Integer> calculateWindowMin(int numOfDays, ArrayList<Integer> temp, int windowSize) {
+        if (temp == null || temp.size() == 0 || numOfDays <= 0 || windowSize <= 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<Integer> res = new ArrayList<>();
+        Deque<Integer> deque = new ArrayDeque<>();
+        for(int i = 0; i < temp.size(); i++){
+            while (!deque.isEmpty() && deque.peekFirst() < i - windowSize + 1){
+                deque.pollFirst();
+            }
+            while (!deque.isEmpty() && temp.get(deque.peekLast()) > temp.get(i)){
+                deque.pollLast();
+            }
+            deque.offerLast(i);
+            if(i >= windowSize - 1){
+                res.add(temp.get(deque.peekFirst()));
+            }
+        }
+        return res;
+    }
 
-    public static void main(String[] args) {
+    /****************************************************************************************************************************************************************************************************************************/
+    /*
+     * Explain:
+     * The logic of my solution is using Map<ProductId, PriorityQueue including all scores of this Product>,
+     * the key of the map is the product id,
+     * the value of the map is the all review scores of this product, and stored in PriorityQueue data structure.
+     * The first for loop is to traverse all scores and put each score into the map of the same product id.
+     * The second for loop is to get highest five (if less than five then get all scores), then calculate the average score,
+     * and put into result map<Product_Id, Average_Score>
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    private class Result {
+        private int id;
+        private double value;
+    }
+
+    public Map<Integer, Double> calculateHighest(int scoreCount, ArrayList<Result> reviewScores) {
+        Map<Integer, PriorityQueue<Double>> map = new HashMap<>();
+        for (Result result : reviewScores) {
+            PriorityQueue<Double> priorityQueue = map.getOrDefault(result.id, new PriorityQueue<>(Comparator.reverseOrder()));
+            priorityQueue.offer(result.value);
+            map.put(result.id, priorityQueue);
+        }
+        Map<Integer, Double> res = new HashMap<>();
+        for (Map.Entry<Integer, PriorityQueue<Double>> entry : map.entrySet()) {
+            PriorityQueue<Double> priorityQueue = entry.getValue();
+            double sum = 0;
+            int i = 0;
+            while (i <= 5) {
+                if (!priorityQueue.isEmpty()) {
+                    sum += priorityQueue.poll();
+                    i++;
+                } else {
+                    break;
+                }
+            }
+            res.put(entry.getKey(), sum / i);
+        }
+        return res;
+    }
+    /****************************************************************************************************************************************************************************************************************************/
+    /*
+     * Explain:
+     * The first step is to traverse all toExclude words and put them into Set, as for searching operation Set is more efficient than List
+     * The second step is to split the text based on regex splitting based on non-english-letters,
+     * using for loop to iterate all words, put them into Map<Word, Times appearing until now>, and memorize the max times among all words.
+     * The last step is to traverse all words and put words with maximum times into result list.
+     * Time: O(n), n is the max(words in text, toExclude)
+     * Space: O(n), n is the max(words in text, toExclude)
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    public static List<String> FindMostFrequentWord(String text, List<String> toExclude){
+        if(toExclude == null || toExclude.size() == 0 || text == null || text.length() == 0){
+            return new ArrayList<>();
+        }
+        List<String> res = new ArrayList<>();
+        Set<String> setExcludeWords = new HashSet<>(toExclude);
+        Map<String, Integer> map = new HashMap<>();
+        String[] allWords = text.split("[^a-zA-Z]");
+        int curMax = -1;
+        for(String word: allWords){
+            if(setExcludeWords.contains(word)){
+                continue;
+            }
+            int cur = map.getOrDefault(word.toLowerCase(), 0);
+            cur++;
+            map.put(word.toLowerCase(), cur);
+            curMax = Math.max(curMax, map.get(word.toLowerCase()));
+        }
+        for(String word: allWords){
+            if(map.get(word.toLowerCase()) == curMax){
+                res.add(word);
+            }
+        }
+        return res;
+    }
+    /****************************************************************************************************************************************************************************************************************************/
+    /*
+     * Explain:
+     * 第一步: 区分开 都是字母的 和 都是数字的 log, 分别放到两个list里面
+     * 第二步: 对 都是字母的 log 进行排序, overwrite comparator方法
+     * (先从identifier后面的单词开始, 逐一比较, 如果能区分出来大小关系, OK
+     *  如果除了identifier都一样, 比较identifier, 如果其中一个是另外一个的子序列, 那么把短的放在前面)
+     * 第三步: 加回result list里面
+     * Time: O(n log n)
+     * Space: O(n)
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    public List<String> reorder(int longFileSize, List<String> logFile) {
+        //corner case
+        if (longFileSize <= 0 || logFile == null || logFile.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<String> res = new ArrayList<>();
+        String SPACE = " ";
+        List<String> digitLog = new ArrayList<>();
+        List<String> englishLetterLog = new ArrayList<>();
+        for (String log : logFile) {
+            char firstLetterOfLog = log.split(SPACE)[1].charAt(0);
+            if (firstLetterOfLog >= '0' && firstLetterOfLog <= '9') {
+                digitLog.add(log);
+            } else {
+                englishLetterLog.add(log);
+            }
+        }
+        Collections.sort(englishLetterLog, (log1, log2) -> {
+            String[] log1Words = log1.split(SPACE);
+            String[] log2Words = log2.split(SPACE);
+            int log1Len = log1Words.length;
+            int log2Len = log2Words.length;
+            int i = 1, j = 1;
+            while (i < log1Len && j < log2Len) {
+                String curWordLog1 = log1Words[i].toLowerCase();
+                String curWordLog2 = log2Words[i].toLowerCase();
+                int compare = curWordLog1.compareTo(curWordLog2);
+                if (compare != 0) {
+                    return compare;
+                }
+                i++;
+                j++;
+            }
+            if (log1Len == log2Len) {
+                return log1Words[0].compareTo(log2Words[0]);
+            }
+            return log1Len == i ? -1 : 1;
+        });
+        res.addAll(englishLetterLog);
+        res.addAll(digitLog);
+        return res;
+    }
+
+    /****************************************************************************************************************************************************************************************************************************/
+    /*
+     * Explain:
+     * 一: 遍历一遍input, 用 Map<input的各个字母, 各个字母出现的次数> 所有出现过的字母和相应字母的出现次数
+     * 二: 用HashSet来记录任意一个scene中间出现的所有字母, 在字母最后一次出现在scene之后, 从HashSet当做删除,
+     *     因为题目要求所有出现在任意一个scene中的字母, 只能出现在当前的scene中,
+     *     也就是说, 当到达scene的末尾的时候, set里面不包含任何字母
+     * 三: 当set的 size 等于零的时候, 加入到结果集当中
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    public List<Integer> lengthEachScene(List<Character> inputList) {
+        if (inputList == null || inputList.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<Integer> res = new ArrayList<>();
+        Map<Character, Integer> map = new HashMap<>();
+        for (char curLetter : inputList) {
+            int curCnt = map.getOrDefault(curLetter, 0);
+            curCnt++;
+            map.put(curLetter, curCnt);
+        }
+        int sceneLen = 0;
+        Set<Character> allLetterInOneScene = new HashSet<>();
+        for (char curLetter : inputList) {
+            sceneLen++;
+            allLetterInOneScene.add(curLetter);
+            map.put(curLetter, map.get(curLetter) - 1);
+            if (map.get(curLetter) == 0) {
+                allLetterInOneScene.remove(curLetter);
+            }
+            if (allLetterInOneScene.size() == 0) {
+                res.add(sceneLen);
+                sceneLen = 0;
+            }
+        }
+        return res;
+    }
+
+    /****************************************************************************************************************************************************************************************************************************/
+    public List<Integer> subSequenceTags(List<String> targetList, List<String> availableTagList){
+
+    }
+    /****************************************************************************************************************************************************************************************************************************/
+
+        public static void main(String[] args) {
         Amazon amazon = new Amazon();
 
         /*int totalSteakhouses = 3;
@@ -397,12 +622,17 @@ public class Amazon {
         int num = 4;
         System.out.println(amazon.subStringsKDist(inputStr, num));*/
 
-        int numRows = 3;
+        /*int numRows = 3;
         int numColumns = 3;
         List<List<Integer>> lot = new ArrayList<>();
         lot.add(Arrays.asList(1, 0, 0));
         lot.add(Arrays.asList(1, 0, 0));
         lot.add(Arrays.asList(1, 9, 1));
-        System.out.println(amazon.minimumDistance(numRows, numColumns, lot));
+        System.out.println(amazon.minimumDistance(numRows, numColumns, lot));*/
+
+        int numOfDays = 6;
+        List<Integer> temp =  Arrays.asList(6,5,4,3,2,1);
+        int windowSize = 3;
+        System.out.println(amazon.calculateWindowMin(numOfDays, new ArrayList<>(temp), windowSize));
     }
 }
