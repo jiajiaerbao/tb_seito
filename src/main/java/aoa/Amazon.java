@@ -449,7 +449,7 @@ public class Amazon {
      * Created by Patel on 01/11/2019
      * @Return maximum usage combination
      * */
-    public static List<String> FindMostFrequentWord(String text, List<String> toExclude){
+    public List<String> findMostFrequentWord(String text, List<String> toExclude){
         if(toExclude == null || toExclude.size() == 0 || text == null || text.length() == 0){
             return new ArrayList<>();
         }
@@ -467,7 +467,7 @@ public class Amazon {
             map.put(word.toLowerCase(), cur);
             curMax = Math.max(curMax, map.get(word.toLowerCase()));
         }
-        for(String word: allWords){
+        for(String word: map.keySet()){
             if(map.get(word.toLowerCase()) == curMax){
                 res.add(word);
             }
@@ -574,8 +574,68 @@ public class Amazon {
     }
 
     /****************************************************************************************************************************************************************************************************************************/
-    public List<Integer> subSequenceTags(List<String> targetList, List<String> availableTagList){
-
+    /*
+     * Explain:
+     * 一: 记录targetList的 单词总个数, 每个单词出现的次数: 用到了两个 hashMap, 第一个 hashMap 是用来保存<target中的每个单词, 该单词出现的次数>,
+     *     第二个 hashMap 仅仅用来保存单词, 其中次数设置为零 <target中的每个单词, 0>
+     * 二: 设置两个 index: slow, fast, 每个过程都是先移动 fast, 当 slow 和 fast 之间的单词满足如下条件:
+     *     targetList的所有单词都出现在了slow和fast之间
+     *     并且每个单词的出现次数都大于等于targetList中相应单词的出现次数
+     *     的时候, 向右移动slow指针, 当
+     *     targetList的所有单词都出现在了slow和fast之间 并且 出现次数不小于targetList中的出现次数的时候, 继续移动向右移动slow指针
+     *     同时更新最短长度
+     * 三: 最后输出最短长度, 如果最短长度的起始节点还是-1的话, 就说明没有找到, 直接输出-1即可
+     * */
+    /*
+     * Created by Patel on 01/11/2019
+     * @Return maximum usage combination
+     * */
+    public List<Integer> subSequenceTags(List<String> targetList, List<String> availableTagList) {
+        //corner case
+        if (targetList == null || targetList.size() == 0 || availableTagList == null || availableTagList.size() == 0) {
+            return new ArrayList<>();
+        }
+        HashMap<String, Integer> targetMap = new HashMap<>();
+        HashMap<String, Integer> curMap = new HashMap<>();
+        for (String target : targetList) {
+            String targetLower = target.toLowerCase();
+            int cnt = targetMap.getOrDefault(targetLower, 0);
+            targetMap.put(targetLower, cnt + 1);
+            curMap.put(targetLower, 0);
+        }
+        int targetSize = targetList.size();
+        int curMinLen = availableTagList.size() + 2;
+        int startMinLen = -1;
+        int endMinLen = -1;
+        int curTargetWordsCnt = 0;
+        int slow = 0;
+        for (int fast = 0; fast < availableTagList.size(); fast++) {
+            String curAvailableWord = availableTagList.get(fast).toLowerCase();
+            if (targetMap.containsKey(curAvailableWord)) {
+                int targetWordCnt = targetMap.get(curAvailableWord);
+                int curAvailWordCnt = curMap.get(curAvailableWord);
+                if (curAvailWordCnt < targetWordCnt) {
+                    curTargetWordsCnt++;
+                }
+                curMap.put(curAvailableWord, curAvailWordCnt + 1);
+                if (curTargetWordsCnt == targetSize) {
+                    while (slow < fast && (!targetMap.containsKey(availableTagList.get(slow).toLowerCase()) ||
+                            curMap.get(availableTagList.get(slow).toLowerCase()) > targetMap.get(availableTagList.get(slow).toLowerCase()))) {
+                        String wordSlow = availableTagList.get(slow).toLowerCase();
+                        if (targetMap.containsKey(wordSlow)) {
+                            curMap.put(wordSlow, curMap.get(wordSlow) - 1);
+                        }
+                        slow++;
+                    }
+                    if (curMinLen > fast - slow) {
+                        curMinLen = fast - slow;
+                        startMinLen = slow;
+                        endMinLen = fast;
+                    }
+                }
+            }
+        }
+        return (startMinLen == -1) ? Arrays.asList(-1) : Arrays.asList(startMinLen, endMinLen);
     }
     /****************************************************************************************************************************************************************************************************************************/
 
@@ -630,9 +690,31 @@ public class Amazon {
         lot.add(Arrays.asList(1, 9, 1));
         System.out.println(amazon.minimumDistance(numRows, numColumns, lot));*/
 
-        int numOfDays = 6;
+        /*int numOfDays = 6;
         List<Integer> temp =  Arrays.asList(6,5,4,3,2,1);
         int windowSize = 3;
-        System.out.println(amazon.calculateWindowMin(numOfDays, new ArrayList<>(temp), windowSize));
+        System.out.println(amazon.calculateWindowMin(numOfDays, new ArrayList<>(temp), windowSize));*/
+
+        /*String text = "jack and jill went to the market to buy bread and cheese cheese is jack favorite food";
+        List<String> toExclude = Arrays.asList("and","he","the","to","is");
+        System.out.println(amazon.findMostFrequentWord(text, toExclude));*/
+
+        /*int logFileSize = 5;
+        List<String> logFile = Arrays.asList(
+                "a1 9 2 3 1",
+                "g1 Act car",
+                "zo4 4 7",
+                "ab1 off KEY doq",
+                "a8 act zoo"
+        );
+        System.out.println(amazon.reorder(logFileSize, logFile));*/
+
+        /*List<Character> inputList = Arrays.asList('a','b','a','b','c','b','a','c','a','d','e','f','e','g','d','e','h','i','j','h','k','l','i','j');
+        System.out.println(amazon.lengthEachScene(inputList));*/
+
+        /*List<String> targetList = Arrays.asList("made","in","Spain");
+        List<String> availableTargetList = Arrays.asList("made","weather","forecast","says","that","made","rain","in","spain","stays");
+        System.out.println(amazon.subSequenceTags(targetList, availableTargetList));*/
+
     }
 }
