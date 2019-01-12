@@ -107,9 +107,11 @@ public class Amazon {
             if (restMemory == null) {
                 continue;
             }
-            if (curMemory + restMemory > maximumUsage) {
+            if (curMemory + restMemory >= maximumUsage) {
+                if(curMemory + restMemory == maximumUsage){
+                    res.clear();
+                }
                 maximumUsage = curMemory + restMemory;
-                res.clear();
                 for (int cur : treeMapOfLessItems.get(restMemory)) {
                     res.add(Arrays.asList(cur, list.get(0)));
                 }
