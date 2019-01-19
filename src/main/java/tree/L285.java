@@ -126,4 +126,45 @@ public class L285 {
         successor[0] = root;
         helper(root.left, p, res, successor);
     }
+
+    /************************************************************************************************/
+    //下面两段代码是算法哥给的答案, 适用于普通的tree, 时间复杂度是 O(n)
+    //找后续节点:
+    //      跟valid BST的思想一样, keep一个 prev, 当 target=prev 的时候, 就找到了 successor (就是root)
+    //      基于valid BST的 中序遍历解法 做的
+
+    //这里的代码关键是理解好:
+    //      prev[0] = root;
+    //      return dfsSuccessor(root.right, target, prev);
+
+    //如果 target 是 value 的话, 需要clarify是否有重复
+    public TreeNode dfsSuccessor(TreeNode root, TreeNode target, TreeNode[] prev){
+        if(root == null){
+            return null;
+        }
+        TreeNode left = dfsSuccessor(root.left, target, prev);
+        if(left != null){
+            return left;
+        }
+        if(prev[0] == target){      //这里找successor
+            return root;
+        }
+        prev[0] = root;
+        return dfsSuccessor(root.right, target, prev);
+    }
+    //找前序节点
+    public TreeNode dfsPredecessor(TreeNode root, TreeNode target, TreeNode[] prev){
+        if(root == null){
+            return null;
+        }
+        TreeNode left = dfsPredecessor(root.left, target, prev);
+        if(left != null){
+            return left;
+        }
+        if(root == target){         //这里找predecessor
+            return prev[0];
+        }
+        prev[0] = root;
+        return dfsPredecessor(root.right, target, prev);
+    }
 }
