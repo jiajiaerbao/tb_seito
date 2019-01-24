@@ -1,8 +1,8 @@
 package interval;
 
 public class Interval {
-    int start;
-    int end;
+    public int start;
+    public int end;
 
     Interval() {
         start = 0;
