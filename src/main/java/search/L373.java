@@ -14,12 +14,15 @@ import java.util.*;
 /*这里是针对第二种解法
 * 坑 1: hashCode 和 equals 写的还不够熟练
 * 坑 2: 这里的hashCode直接用乘以31的方法即可
-* 坑 3: 比较大小的话,
+* 坑 3: 坑BOSS, 比较大小的话,
 *           可以在 Cell_2 implements Comparable<Cell_2>,
 *                   然后 @Override
 *                        public int compareTo(Cell_2 cell1)
 *           也可以在 PriorityQueue 里面改写 Comparator
 *               new PriorityQueue<Cell_2>(cell1, cell2) -> cell1.val - cell2.val);
+*       也就是说, Java比较对象有两种方式:
+ *          第一种是把Object的 Class extends Comparable<Cell>, 然后 override compareTo, 把Object变成可比较的
+ *          第二种是定义一个comparator
 *  坑 4: 这里是暴力解法, 把所有的元素都放到了minHeap里面, 然后取出前 k
 * */
 @SuppressWarnings("Duplicates")
