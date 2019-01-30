@@ -14,11 +14,26 @@ package dp;
 * */
 @SuppressWarnings("Duplicates")
 public class L70 {
+
     public int climbStairs(int n) {
-        return helper(n, new int[n + 1]);
+        if (n == 0 || n == 1) {
+            return 1;
+        }
+        int[] dp = new int[n];
+        dp[0] = 1;
+        dp[1] = 2;
+        for (int i = 2; i < n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n - 1];
     }
 
-    private int helper(int n, int[] mem) {
+    /*********************************************************************/
+    public int climbStairs_2(int n) {
+        return helper_2(n, new int[n + 1]);
+    }
+
+    private int helper_2(int n, int[] mem) {
         if (n == 0) {
             mem[n] = 1;
             return mem[n];
@@ -34,7 +49,7 @@ public class L70 {
         if (mem[n] > 0) {
             return mem[n];
         }
-        mem[n] = helper(n - 2, mem) + helper(n - 1, mem);
+        mem[n] = helper_2(n - 2, mem) + helper_2(n - 1, mem);
         return mem[n];
     }
 }
