@@ -12,7 +12,7 @@ package peilian;
 * */
 @SuppressWarnings("Duplicates")
 public class L92 {
-    public ListNode reverseBetween(ListNode head, int m, int n) {
+    public ListNode reverseBetween_2(ListNode head, int m, int n) {
         if (head == null || m < 0 || n < 0 || m > n) {
             return head;
         }
@@ -47,4 +47,80 @@ public class L92 {
         tailM.next = cur;
         return head;
     }
+
+    /***********************************第二遍***********************************************/
+    //这里只是reverse从 m 到 n, 也就是 cnt 从 n-m+1 到 1 (这时 prev 是最后一个, cur是 n 后面那个)
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || m < 0 || n < 0 || m > n) {
+            return head;
+        }
+        ListNode leftMNode = null;
+        ListNode mNode = head;
+        int cnt = 1;
+        while (cnt < m && mNode != null) {
+            leftMNode = mNode;
+            mNode = mNode.next;
+            cnt++;
+        }
+
+        ListNode cur = mNode;
+        ListNode prev = null;
+        ListNode next = null;
+        cnt = n - m + 1;
+        while (cur != null && cnt > 0) {
+            next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+            cnt--;
+        }
+        if (leftMNode != null) {
+            leftMNode.next = prev;
+        } else {
+            head = prev;
+        }
+        mNode.next = cur;
+        return head;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
