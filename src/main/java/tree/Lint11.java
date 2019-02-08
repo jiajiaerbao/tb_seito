@@ -3,6 +3,11 @@ package tree;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+* 坑 1: 你写的是 brute force 的方法, 需要剪枝
+*       k1 < root.val 的时候, 才走向左子树
+*       root.val > k2 的时候, 才走向右子树
+* */
 @SuppressWarnings("Duplicates")
 public class Lint11 {
     public List<Integer> searchRange(TreeNode root, int k1, int k2) {
@@ -16,10 +21,14 @@ public class Lint11 {
         if (root == null) {
             return;
         }
-        getRange(root.left, k1, k2, res);
-        if (k1 < root.val && root.val < k2) {
+        if (k1 <= root.val) {
+            getRange(root.left, k1, k2, res);
+        }
+        if (k1 <= root.val && root.val <= k2) {
             res.add(root.val);
         }
-        getRange(root.right, k1, k2, res);
+        if (root.val <= k2) {
+            getRange(root.right, k1, k2, res);
+        }
     }
 }
