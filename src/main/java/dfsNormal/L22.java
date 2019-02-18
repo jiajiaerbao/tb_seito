@@ -5,6 +5,38 @@ import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class L22 {
+    /******************************第二遍********************************************/
+    /*
+    * 坑 1: 分叉: 加左括号或者加右括号
+    * */
+    public List<String> generateParenthesis(int n) {
+        List<String> res = new ArrayList<>();
+        if (n <= 0) {
+            return res;
+        }
+        helper(0, 0, new StringBuilder(), res, n);
+        return res;
+    }
+
+    public void helper(int leftCnt, int rightCnt, StringBuilder path, List<String> res, int n) {
+        if (leftCnt == rightCnt && leftCnt == n) {
+            res.add(path.toString());
+        }
+        if (leftCnt < rightCnt || leftCnt > n) {
+            return;
+        }
+        int size = path.length();
+
+        path.append("(");
+        helper(leftCnt + 1, rightCnt, path, res, n);
+        path.setLength(size);
+
+        path.append(")");
+        helper(leftCnt, rightCnt + 1, path, res, n);
+        path.setLength(size);
+    }
+    /******************************第一遍********************************************/
+
     /*
     * 坑 1: 通过这道题要掌握括号匹配问题的特点:
     *           a. 定义一个 delta, 在中间的任意时刻, 左括号的数量一定大于等于右括号的数量
@@ -19,16 +51,16 @@ public class L22 {
 
     private String LEFT_PARENTHES = "(";
     private String RIGHT_PARENTHES = ")";
-    public List<String> generateParenthesis(int n) {
+    public List<String> generateParenthesis_1(int n) {
         List<String> res = new ArrayList<>();
         if(n <= 0){
             return res; //这里要抛出异常, 像throw new IllegalArgumentException("Invalid Input!")
         }
         //using helper to construct result
-        helper(n, n, 0, new StringBuilder(), res);
+        helper_1(n, n, 0, new StringBuilder(), res);
         return res;
     }
-    private void helper(final int left, final int right, final int delta, StringBuilder path, final List<String> res){
+    private void helper_1(final int left, final int right, final int delta, StringBuilder path, final List<String> res){
         if(left == 0 && right == 0 && delta == 0){
             res.add(path.toString());
         }
@@ -40,26 +72,26 @@ public class L22 {
         //这里可以优化, 只有当左括号个数大于 1 个的时候, 才消耗左括号
         if(left > 0){
             path.append(LEFT_PARENTHES);
-            helper(left-1, right, delta+1, path, res);
+            helper_1(left-1, right, delta+1, path, res);
             path.setLength(size);
         }
         //这里可以优化, 只有当左括号个数大于右括号的个数时, 才消耗右括号
         if(left < right){
             path.append(RIGHT_PARENTHES);
-            helper(left, right-1, delta-1, path, res);
+            helper_1(left, right-1, delta-1, path, res);
             path.setLength(size);
         }
     }
 
     /***********************************第二遍*****************************************************/
 
-    public List<String> generateParenthesis2(int n) {
+    public List<String> generateParenthesis_2(int n) {
         List<String> res = new ArrayList<>();
-        dfs(n, 0, 0, res, new StringBuilder());
+        dfs_2(n, 0, 0, res, new StringBuilder());
         return res;
     }
 
-    private void dfs(int n, int left, int right, List<String> res, StringBuilder path) {
+    private void dfs_2(int n, int left, int right, List<String> res, StringBuilder path) {
         if (left == n && right == n) {
             res.add(path.toString());
             return;
@@ -69,10 +101,10 @@ public class L22 {
         }
         int size = path.length();
         path.append("(");
-        dfs(n, left + 1, right, res, path);
+        dfs_2(n, left + 1, right, res, path);
         path.setLength(size);
         path.append(")");
-        dfs(n, left, right + 1, res, path);
+        dfs_2(n, left, right + 1, res, path);
         path.setLength(size);
     }
 }
