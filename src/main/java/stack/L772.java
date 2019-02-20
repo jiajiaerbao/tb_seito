@@ -86,6 +86,9 @@ public class L772 {
             while (!operatorStack.isEmpty()) {
                 char top = operatorStack.peek();
                 Integer weight = operatorMap.get(top);
+                //这里还是没有理解, 那具体例子来说明
+                //1+2*3: 从左向右扫描, 当+已经在栈里, 即将入栈的是*, 直接压栈
+                //1*2+3: 从左向右扫描, 当*已经在栈里, 即将入栈的是+, 先计算运算符栈里的结果
                 if (weight == null || weight < optrWeight) {
                     break;
                 }
