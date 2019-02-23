@@ -4,7 +4,54 @@ import java.util.*;
 
 @SuppressWarnings("Duplicates")
 public class L341 {
+    /******************************第二遍********************************************/
+    /*
+    * 坑 1: helper没有第一遍写的好:
+    *           helper的参数换成List<NestedInteger>会简单许多
+    *           最开始没有进行null的check
+    * */
+    class SecondTime{
+        public class NestedIterator implements Iterator<Integer> {
+            private Stack<NestedInteger> stack;
 
+            public NestedIterator(List<NestedInteger> nestedList) {
+                stack = new Stack<>();
+                for (int i = nestedList.size() - 1; i >= 0; i--) {
+                    helper(nestedList.get(i), stack);
+                }
+            }
+
+            //传入List<NestedInteger> list会简单许多
+            private void helper(NestedInteger curElement, Stack<NestedInteger> stack) {
+                if (curElement.isInteger()) {
+                    stack.push(curElement);
+                    return;
+                }
+                List<NestedInteger> list = curElement.getList();
+                for (int i = list.size() - 1; i >= 0; i--) {
+                    if (list.get(i).isInteger()) {
+                        stack.push(list.get(i));
+                    } else {
+                        //这里传入list.get(i).getList()会好很多
+                        helper(list.get(i), stack);
+                    }
+                }
+            }
+
+            @Override
+            public Integer next() {
+                while (!stack.peek().isInteger()) {
+                    helper(stack.pop(), stack);
+                }
+                return stack.pop().getInteger();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return !stack.isEmpty();
+            }
+        }
+    }
 
     /******************************第一遍********************************************/
     /*
