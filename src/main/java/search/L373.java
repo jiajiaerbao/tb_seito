@@ -9,6 +9,7 @@ import java.util.*;
 *           下一步是把 [i+1, j] 和 [i, j+1] 的元素放入到 minHeap 里面
 *           放入之前注意check i+1 和 j+1 是否越界
 * 坑 3: 细节注意一下, 比如构造函数的参数顺序
+* 坑 4: 这里是暴力解法, 把所有的元素都放到了minHeap里面, 然后取出前 k
 * */
 
 /*这里是针对第二种解法
@@ -21,9 +22,8 @@ import java.util.*;
 *           也可以在 PriorityQueue 里面改写 Comparator
 *               new PriorityQueue<Cell_2>(cell1, cell2) -> cell1.val - cell2.val);
 *       也就是说, Java比较对象有两种方式:
- *          第一种是把Object的 Class extends Comparable<Cell>, 然后 override compareTo, 把Object变成可比较的
- *          第二种是定义一个comparator
-*  坑 4: 这里是暴力解法, 把所有的元素都放到了minHeap里面, 然后取出前 k
+*           第一种是把Object的 Class implements Comparable<Cell>, 然后 override compareTo, 把Object变成可比较的
+*           第二种是定义一个comparator
 * */
 @SuppressWarnings("Duplicates")
 public class L373 {
