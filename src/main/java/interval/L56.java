@@ -12,18 +12,6 @@ public class L56 {
     * 1. 最后千万不要忘记: 在跳出for loop之后, 把最后一个prev加到result list里面
     * */
     class SecondTime{
-        public class Interval {
-            int start;
-            int end;
-            Interval() {
-                start = 0;
-                end = 0;
-            }
-            Interval(int s, int e) {
-                start = s;
-                end = e;
-            }
-        }
         public List<Interval> merge(List<Interval> intervals) {
             List<Interval> res = new ArrayList<>();
             //corner case
@@ -31,11 +19,12 @@ public class L56 {
                 return res;
             }
             Collections.sort(intervals, (int1, int2) -> {
-                if (int1.start != int2.start) {
+                return int1.start - int2.start;
+                /*if (int1.start != int2.start) {
                     return int1.start - int2.start;
                 } else {
                     return int1.end - int2.end;
-                }
+                }*/
             });
 
             Interval prev = intervals.get(0);
