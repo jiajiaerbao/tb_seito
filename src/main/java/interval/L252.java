@@ -25,6 +25,7 @@ public class L252 {
         Interval prev = intervals[0];
         for (int i = 1; i < intervals.length; i++) {
             Interval cur = intervals[i];
+            //这里是坑, 比较的是 前一个点的终点 和 后一个点的起点
             if (prev.end > cur.start) {
                 return false;
             }
