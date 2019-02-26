@@ -2,6 +2,46 @@ package search;
 
 @SuppressWarnings("Duplicates")
 public class LFindK {
+    /******************************第二遍********************************************/
+    /*
+    * 坑 1: 注意这里的 nums array 是 无序的
+    * */
+    class SecondTime{
+        public int findKth(int[] nums, int k){
+            return search(nums, 0, nums.length-1, k);
+        }
+        private int search(int[] nums, int start, int end, int k){
+            if(start == end){
+                return nums[start];
+            }
+            int pivotIdx = partition(nums, start, end);
+            int pivotRank = pivotIdx - start + 1;
+            if(pivotRank == k){
+                return nums[pivotIdx];
+            }else if(pivotRank > k){
+                return search(nums, start, pivotIdx - 1, k);
+            }else {
+                return search(nums, pivotIdx+1, end, k - pivotRank);
+            }
+        }
+        private int partition(int[] nums, int start, int end){
+            int pivot = nums[end];
+            int left = start-1;
+            for(int i = start; i < end; i++){
+                //left是小于pivot的区间, 当碰到了nums[i]的话, ++left
+                if(nums[i] < pivot){
+                    swap(nums, ++left, i);
+                }
+            }
+            swap(nums, ++left, end);
+            return left;
+        }
+        private void swap(int[] nums, int i, int j){
+            int temp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = temp;
+        }
+    }
     /******************************第一遍********************************************/
     /*
     * 坑 1: 这道题你不熟练, 关键就是写熟了, 这个findK和求中位数, 可以用同一个代码
